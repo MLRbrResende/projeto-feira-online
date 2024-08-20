@@ -1,31 +1,52 @@
-const produtos = []
-
-//Criar novo produto.
-document.getElementById('formulario-produto').addEventListener('submit', function(event) {
-    event.preventDefault(); // Corrigido para prevenir o comportamento padrão
-
-    const nomeProduto = document.getElementById("nome-produto").value;
-    const valProduto = document.getElementById("valor-produto").value;
-
-    let idProduto = 0;
-    
-    // Encontrar o maior ID existente
-    for(let i = 0; i < produtos.length; i++) {
-        if(produtos[i].id > idProduto) {
-            idProduto = produtos[i].id;
-        }
+async function lerListaProduto() {
+    try {
+        const resposta = await fetch("http://localhost:3000/posts");
+        const json = await resposta.json();
+        document.getElementById("lista-produtos").innerHTML = json.map(post => `<li>${post.nome} R$${post.valor.toFixed(2)}</li>`).join('');
+    } catch (error) {
+        console.error('Erro:', error);
     }
-    
-    // Incrementar o ID para o novo produto
-    idProduto += 1;
+}
 
-    const novoProduto = {
-        id: idProduto,
-        nome: nomeProduto,
-        valor: valProduto
-    };
+async function quantidadeProduto() {
+    try {
+        const resposta = await fetch('http://localhost:3000/posts');
+        const dados = await resposta.json();
+        const ultimoProduto = dados.reduce((max, produto) => produto.id > max.id ? produto : max, {id: 0});
+        return ultimoProduto.id;
+    } catch (error) {
+        console.error('Erro:', error);
+    }
+}
 
-    produtos.push(novoProduto);
+async function criarProduto() {
+    document.getElementById('formulario-produto').addEventListener('submit', async function(event) {
+        event.preventDefault();
 
-    console.log(produtos);
-});
+        try {
+            let idProduto = await quantidadeProduto() + 1;
+
+            const nomeProduto = document.getElementById("nome-produto").value;
+            const valorProduto = document.getElementById("valor-produto").value;
+
+            const resposta = await fetch("http://localhost:3000/posts", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: idProduto,
+                    nome: nomeProduto,
+                    valor: parseFloat(valorProduto)
+                })
+            });
+            const dados = await resposta.json();
+            console.log(dados);
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    });
+}
+
+criarProduto();
+lerListaProduto();
