@@ -1,8 +1,14 @@
 async function lerListaProduto() {
     try {
         const resposta = await fetch("https://db-projeto-feira-online-4mu1.vercel.app/posts");
+        if (!resposta.ok) {
+            throw new Error(`Erro na resposta: ${resposta.statusText}`);
+        }
         const json = await resposta.json();
-        document.getElementById("lista-produtos").innerHTML = json.map(post => `<li>${post.nome} R$${post.valor.toFixed(2)}</li>`).join('');
+        console.log('Produtos recebidos:', json); // Log para verificar os dados recebidos
+        document.getElementById("lista-produtos").innerHTML = json.map(post => 
+            `<li>${post.nome} R$${(post.valor && !isNaN(post.valor)) ? post.valor.toFixed(2) : 'Valor indisponível'}</li>`
+        ).join('');
     } catch (error) {
         console.error('Erro:', error);
     }
@@ -11,7 +17,12 @@ async function lerListaProduto() {
 async function quantidadeProduto() {
     try {
         const resposta = await fetch('https://db-projeto-feira-online-4mu1.vercel.app/posts');
-        const dados = await resposta.json();
+        if (!resposta.ok) {
+            throw new Error(`Erro na resposta: ${resposta.statusText}`);
+        }
+        const texto = await resposta.text();
+        const dados = JSON.parse(texto);
+        console.log('Dados recebidos para quantidadeProduto:', dados); // Log para verificar os dados recebidos
         const ultimoProduto = dados.reduce((max, produto) => produto.id > max.id ? produto : max, {id: 0});
         return ultimoProduto.id;
     } catch (error) {
