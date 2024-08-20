@@ -1,6 +1,6 @@
 async function lerListaProduto() {
     try {
-        const resposta = await fetch("http://localhost:3000/posts");
+        const resposta = await fetch("https://db-projeto-feira-online-4mu1.vercel.app/posts");
         const json = await resposta.json();
         document.getElementById("lista-produtos").innerHTML = json.map(post => `<li>${post.nome} R$${post.valor.toFixed(2)}</li>`).join('');
     } catch (error) {
@@ -10,7 +10,7 @@ async function lerListaProduto() {
 
 async function quantidadeProduto() {
     try {
-        const resposta = await fetch('http://localhost:3000/posts');
+        const resposta = await fetch('https://db-projeto-feira-online-4mu1.vercel.app/posts');
         const dados = await resposta.json();
         const ultimoProduto = dados.reduce((max, produto) => produto.id > max.id ? produto : max, {id: 0});
         return ultimoProduto.id;
@@ -29,7 +29,7 @@ async function criarProduto() {
             const nomeProduto = document.getElementById("nome-produto").value;
             const valorProduto = document.getElementById("valor-produto").value;
 
-            const resposta = await fetch("http://localhost:3000/posts", {
+            const resposta = await fetch("https://db-projeto-feira-online-4mu1.vercel.app/posts", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
