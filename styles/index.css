@@ -1,0 +1,24 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(255, 60, 0, 0.5);
+    height: 75px;
+}
+
+.logo-mr-ecommerce {
+    width: 100px;
+    height: auto;
+}
+
+#titulo-pagina {
+    color: aliceblue;
+    margin: 0;
+    text-align: center;
+    flex: 1;
+}
